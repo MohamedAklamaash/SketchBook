@@ -7,4 +7,3 @@ export const colors = {
     Yellow:"yellow",
     White:"white"
 }
-
