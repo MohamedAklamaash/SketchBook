@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { MenuItems } from '@/constants/menuConstants';
 import { setBrushSize,setChangeColor} from '@/store/toolBoxSlice';
 export default function ToolBox() {
-  const [brushSize, setbrushSize] = useState<number>(0);
+  const [brushSize, setbrushSize] = useState<number>(3);
   const [brushColor, setbrushColor] = useState<string>(colors.Black);
   const {activeMenuItem} = useSelector((state:any)=>state.menu);
   const showStrokes = activeMenuItem === MenuItems.PENCIL;
@@ -80,7 +80,9 @@ export default function ToolBox() {
               className=' text-center font-serif'
             >Brush Size</h4>
             <div className=' flex justify-center md:mt-2 '>
-              <input type="range" min={1} max={10} step={1} 
+              <input type="range" 
+              min={1} max={11} step={1} 
+              value={brushSize}
               onChange={(e)=>{
                 setbrushSize(Number(e.target.value));
                 dispatch(setBrushSize({item:activeMenuItem,brushSize}))
