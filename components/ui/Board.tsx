@@ -73,7 +73,7 @@ export default function Board() {
   useLayoutEffect(()=>{
     if(! canvasRef.current) return;
     const canvas:HTMLCanvasElement = canvasRef.current;
-    const context:CanvasRenderingContext2D | null = canvas.getContext("2d");
+    const context:CanvasRenderingContext2D  = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
