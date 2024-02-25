@@ -10,7 +10,7 @@ export default function Board() {
   const shouldDraw = useRef(false);
   const {activeMenuItem,actionMenuItem} = useSelector((state:any)=>state.menu);
   const {color,size} = useSelector((state:any)=>state.toolbox[activeMenuItem]);
-  const drawHistory = useRef([]);
+  const drawHistory = useRef<ImageData[]>([]);
   const historyPtr = useRef<number>(0);
   useEffect(()=>{
     if(! canvasRef.current) return;
@@ -28,7 +28,9 @@ export default function Board() {
           historyPtr.current -= 1;
           const imageData = drawHistory.current[historyPtr.current];  
           if (imageData ) {
-              context.putImageData(imageData, 0, 0);
+              if(context){
+                context.putImageData(imageData, 0, 0);
+              }
           } else {
               console.error("Invalid ImageData");
           }
@@ -41,8 +43,9 @@ export default function Board() {
       historyPtr.current += 1;
       const imageData = drawHistory.current[historyPtr.current];
       if (imageData) {
-        context.putImageData(imageData, 0, 0);
-        console.log(imageData);
+        if(context){
+          context.putImageData(imageData, 0, 0);
+        } 
       }
     } else {
       console.warn("No more redo history available");
@@ -56,8 +59,10 @@ export default function Board() {
     const canvas:HTMLCanvasElement = canvasRef.current;
     const context  = canvas.getContext("2d");
     const changeConfig = (color:string,size:number)=>{
-      context.strokeStyle = color;
-      context.lineWidth = size;
+      if(context){
+        context.strokeStyle = color;
+        context.lineWidth = size;
+      }
     }
     changeConfig(color,size);
     const handleSizeChangeConfig = ({color,size}:{color:string,size:number})=>{
@@ -78,20 +83,28 @@ export default function Board() {
     canvas.height = window.innerHeight;
 
     const beginPath = (x:number,y:number)=>{
-      context?.beginPath(); // creates a new path
-      context?.moveTo(x,y); // move to means start point in the drawing
+      if(context){
+        context.beginPath(); // creates a new path
+        context.moveTo(x,y); // move to means start point in the drawing
+      }
     }
 
     const movePath = (x:number,y:number)=>{
-      context?.lineTo(x,y);
-      context?.stroke();
+      if(context){
+        context?.lineTo(x,y);
+        context?.stroke();
+      }
     }
 
     const handleMouseUp = (e:any)=>{
       shouldDraw.current = false;
-      const imageData = context.getImageData(0,0,canvas.width,canvas.height);
-      drawHistory.current.push(imageData);
-      historyPtr.current = drawHistory.current.length - 1;
+      if(context){
+        const imageData = context.getImageData(0,0,canvas.width,canvas.height);
+        if(imageData){
+          drawHistory.current.push(imageData);
+        }
+        historyPtr.current = drawHistory.current.length - 1;
+      }
     };
 
     const handleMouseMove = (e:any)=>{
