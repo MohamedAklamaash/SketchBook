@@ -11,6 +11,9 @@ export default function Board({}: Props) {
   const shouldDraw = useRef(false);
   const {activeMenuItem,actionMenuItem} = useSelector((state:any)=>state.menu);
   const {color,size} = useSelector((state:any)=>state.toolbox[activeMenuItem]);
+  const drawHistory = useRef([]);
+  
+  const historyPtr = useRef<number>(0);
   useEffect(()=>{
     if(! canvasRef.current) return;
     const canvas:HTMLCanvasElement = canvasRef.current;
@@ -22,8 +25,34 @@ export default function Board({}: Props) {
       anchorTag.download = "sketch.png";
       anchorTag.click();
       dispatch(setactionItemsClick(null));
-    }    
+    }else if (actionMenuItem === MenuItems.UNDO) {
+      if (historyPtr.current > 0) {
+          historyPtr.current -= 1;
+          const imageData = drawHistory.current[historyPtr.current];  
+          if (imageData ) {
+              context.putImageData(imageData, 0, 0);
+          } else {
+              console.error("Invalid ImageData");
+          }
+      } else {
+          console.warn("No more undo history available");
+      }
+      dispatch(setactionItemsClick(null));              
+  }else if (actionMenuItem === MenuItems.REDO) {    
+    if (historyPtr.current >= 0 && historyPtr.current < drawHistory.current.length - 1) {
+      historyPtr.current += 1;
+      const imageData = drawHistory.current[historyPtr.current];
+      if (imageData) {
+        context.putImageData(imageData, 0, 0);
+        console.log(imageData);
+      }
+    } else {
+      console.warn("No more redo history available");
+    }
+    dispatch(setactionItemsClick(null));
+  }  
   },[actionMenuItem]);
+  
   useEffect(()=>{
     if(! canvasRef.current) return;
     const canvas:HTMLCanvasElement = canvasRef.current;
@@ -34,7 +63,6 @@ export default function Board({}: Props) {
     }
     changeConfig();
   },[color,size]);
-
   useLayoutEffect(()=>{
     if(! canvasRef.current) return;
     const canvas:HTMLCanvasElement = canvasRef.current;
@@ -54,6 +82,9 @@ export default function Board({}: Props) {
 
     const handleMouseUp = (e:any)=>{
       shouldDraw.current = false;
+      const imageData = context.getImageData(0,0,canvas.width,canvas.height);
+      drawHistory.current.push(imageData);
+      historyPtr.current = drawHistory.current.length - 1;
     };
 
     const handleMouseMove = (e:any)=>{
