@@ -1,14 +1,29 @@
 "use client"
+import { MenuItems } from '@/constants/menuConstants';
+import { setactionItemsClick } from '@/store/menuSlice';
 import React,{useEffect, useLayoutEffect, useRef} from 'react'
 import {useSelector,useDispatch } from "react-redux";
 type Props = {}
 
 export default function Board({}: Props) {
   const canvasRef = useRef(null);
+  const dispatch = useDispatch();
   const shouldDraw = useRef(false);
   const {activeMenuItem,actionMenuItem} = useSelector((state:any)=>state.menu);
   const {color,size} = useSelector((state:any)=>state.toolbox[activeMenuItem]);
-
+  useEffect(()=>{
+    if(! canvasRef.current) return;
+    const canvas:HTMLCanvasElement = canvasRef.current;
+    const context:CanvasRenderingContext2D  = canvas.getContext("2d");
+    if(actionMenuItem === MenuItems.DOWNLOAD){
+      const URL = canvas.toDataURL();
+      const anchorTag = document.createElement("a");
+      anchorTag.href = URL;
+      anchorTag.download = "sketch.png";
+      anchorTag.click();
+      dispatch(setactionItemsClick(null));
+    }    
+  },[actionMenuItem]);
   useEffect(()=>{
     if(! canvasRef.current) return;
     const canvas:HTMLCanvasElement = canvasRef.current;
@@ -63,7 +78,7 @@ export default function Board({}: Props) {
   return (
     <canvas
     ref={canvasRef}
-    className=' w-full '
+    className=' w-full max-md:h-[150vh] '
     ></canvas>
   )
 }
