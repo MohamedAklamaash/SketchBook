@@ -16,7 +16,7 @@ export default function Board({}: Props) {
   return (
     <canvas
     ref={canvasRef}
-    className=' max-md:w-full max-md:h-full '
+    className=' max-md:w-full w-full max-md:h-full '
     ></canvas>
   )
 }
