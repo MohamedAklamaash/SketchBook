@@ -15,7 +15,7 @@ export default function Board() {
   useEffect(()=>{
     if(! canvasRef.current) return;
     const canvas:HTMLCanvasElement = canvasRef.current;
-    const context:CanvasRenderingContext2D  = canvas.getContext("2d");
+    const context  = canvas.getContext("2d");
     if(actionMenuItem === MenuItems.DOWNLOAD){
       const URL = canvas.toDataURL();
       const anchorTag = document.createElement("a");
@@ -54,7 +54,7 @@ export default function Board() {
   useEffect(()=>{
     if(! canvasRef.current) return;
     const canvas:HTMLCanvasElement = canvasRef.current;
-    const context:CanvasRenderingContext2D  = canvas.getContext("2d");
+    const context  = canvas.getContext("2d");
     const changeConfig = (color:string,size:number)=>{
       context.strokeStyle = color;
       context.lineWidth = size;
@@ -73,7 +73,7 @@ export default function Board() {
   useLayoutEffect(()=>{
     if(! canvasRef.current) return;
     const canvas:HTMLCanvasElement = canvasRef.current;
-    const context:CanvasRenderingContext2D  = canvas.getContext("2d");
+    const context  = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
