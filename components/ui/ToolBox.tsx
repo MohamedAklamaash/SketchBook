@@ -4,6 +4,7 @@ import { colors } from '@/constants/colorsConstant';
 import { useDispatch, useSelector } from 'react-redux';
 import { MenuItems } from '@/constants/menuConstants';
 import { setBrushSize,setChangeColor} from '@/store/toolBoxSlice';
+import { socket } from '@/socket/socket';
 export default function ToolBox() {
   const [brushSize, setbrushSize] = useState<number>(3);
   const [brushColor, setbrushColor] = useState<string>(colors.Black);
@@ -33,40 +34,60 @@ export default function ToolBox() {
             <div className={`w-10 h-10 cursor-pointer  ${brushColor === colors.Black ? "ring-2 ring-text1":""} `}  style={{backgroundColor:colors.Black}} 
             onClick={(e)=>{
               setbrushColor(colors.Black);
-              dispatch(setChangeColor({item:activeMenuItem,color:colors.Black}))
-            }}  
+              dispatch(setChangeColor({item:activeMenuItem,color:colors.Black}));
+              const color = colors.Black;
+              const size = brushSize;
+              socket.emit("config",{color,size});            }}  
             />
             <div className={`w-10 h-10 cursor-pointer ${brushColor === colors.Red ? "ring-2 ring-text1":""}`}  style={{backgroundColor:colors.Red}} 
             onClick={(e)=>{
               setbrushColor(colors.Red);
-              dispatch(setChangeColor({item:activeMenuItem,color:colors.Red}))
+              dispatch(setChangeColor({item:activeMenuItem,color:colors.Red}));
+              const color = colors.Red;
+              const size = brushSize;
+              socket.emit("config",{color,size});
             }}
             />
             <div className={`w-10 h-10 cursor-pointer ${brushColor === colors.Green ? "ring-2 ring-text1":""}`} style={{backgroundColor:colors.Green}}
             onClick={(e)=>{
               setbrushColor(colors.Green);
               dispatch(setChangeColor({item:activeMenuItem,color:colors.Green}));
+              const color = colors.Green;
+              const size = brushSize;
+              socket.emit("config",{color,size});            
             }} 
             />
             <div className={`w-10 h-10 cursor-pointer ${brushColor === colors.Yellow ? "ring-2 ring-text1":""}`}  style={{backgroundColor:colors.Yellow}} 
             onClick={(e)=>{
               setbrushColor(colors.Yellow);
               dispatch(setChangeColor({item:activeMenuItem,color:colors.Yellow}));
+              const color = colors.Yellow;
+              const size = brushSize;
+              socket.emit("config",{color,size});
             }} />
             <div className={`w-10 h-10 cursor-pointer ${brushColor === colors.Blue ? "ring-2 ring-text1":""}`}  style={{backgroundColor:colors.Blue}} 
             onClick={(e)=>{
               setbrushColor(colors.Blue);
               dispatch(setChangeColor({item:activeMenuItem,color:colors.Blue}));
+              const color = colors.Blue;
+              const size = brushSize;
+              socket.emit("config",{color,size});
             }} />
             <div className={`w-10 h-10 cursor-pointer ${brushColor === colors.Orange ? "ring-2 ring-text1":""}`}  style={{backgroundColor:colors.Orange}} 
             onClick={(e)=>{
               setbrushColor(colors.Orange);
               dispatch(setChangeColor({item:activeMenuItem,color:colors.Orange}));
+              const color = colors.Orange;
+              const size = brushSize;
+              socket.emit("config",{color,size});
             }} />
             <div className={`w-10 h-10 cursor-pointer ${brushColor === colors.White ? "ring-2 ring-text1":""}`}  style={{backgroundColor:colors.White}} 
             onClick={(e)=>{
               setbrushColor(colors.White);
               dispatch(setChangeColor({item:activeMenuItem,color:colors.White}));
+              const color = colors.White;
+              const size = brushSize;
+              socket.emit("config",{color,size});
             }} />
           </div>
         </>
@@ -85,7 +106,9 @@ export default function ToolBox() {
               value={brushSize}
               onChange={(e)=>{
                 setbrushSize(Number(e.target.value));
-                dispatch(setBrushSize({item:activeMenuItem,brushSize}))
+                const size = Number(e.target.value);
+                dispatch(setBrushSize({item:activeMenuItem,brushSize}));
+                socket.emit("config",{color:brushColor,size});
               }} />
             </div>
           </div>

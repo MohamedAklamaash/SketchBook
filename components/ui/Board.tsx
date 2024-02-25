@@ -3,16 +3,14 @@ import { MenuItems } from '@/constants/menuConstants';
 import { setactionItemsClick } from '@/store/menuSlice';
 import React,{useEffect, useLayoutEffect, useRef} from 'react'
 import {useSelector,useDispatch } from "react-redux";
-type Props = {}
-
-export default function Board({}: Props) {
+import { socket } from '@/socket/socket';
+export default function Board() {
   const canvasRef = useRef(null);
   const dispatch = useDispatch();
   const shouldDraw = useRef(false);
   const {activeMenuItem,actionMenuItem} = useSelector((state:any)=>state.menu);
   const {color,size} = useSelector((state:any)=>state.toolbox[activeMenuItem]);
   const drawHistory = useRef([]);
-  
   const historyPtr = useRef<number>(0);
   useEffect(()=>{
     if(! canvasRef.current) return;
@@ -57,11 +55,20 @@ export default function Board({}: Props) {
     if(! canvasRef.current) return;
     const canvas:HTMLCanvasElement = canvasRef.current;
     const context:CanvasRenderingContext2D  = canvas.getContext("2d");
-    const changeConfig = ()=>{
+    const changeConfig = (color:string,size:number)=>{
       context.strokeStyle = color;
       context.lineWidth = size;
     }
-    changeConfig();
+    changeConfig(color,size);
+    const handleSizeChangeConfig = ({color,size}:{color:string,size:number})=>{
+      changeConfig(color,size);
+      console.log(color,size);
+      
+    }
+    socket.on("config",handleSizeChangeConfig);
+    return()=>{
+      socket.off("config",handleSizeChangeConfig);
+    }
   },[color,size]);
   useLayoutEffect(()=>{
     if(! canvasRef.current) return;
@@ -90,19 +97,31 @@ export default function Board({}: Props) {
     const handleMouseMove = (e:any)=>{
       if(! shouldDraw.current) return;
       movePath(e.clientX,e.clientY);
+      socket.emit("movePath",{x:e.clientX,y:e.clientY});
     };
 
     const handleMouseDown = (e:any)=>{
       shouldDraw.current = true;
       beginPath(e.clientX,e.clientY);
+      socket.emit("beginPath",{x:e.clientX,y:e.clientY});
     };
     canvas.addEventListener("mousedown",handleMouseDown);
     canvas.addEventListener("mousemove",handleMouseMove);
     canvas.addEventListener("mouseup",handleMouseUp);
+    const handleBeginPathSocket = ({x,y}:{x:number,y:number})=>{
+      beginPath(x,y);
+    }
+    const handleMovePathSocket = ({x,y}:{x:number,y:number})=>{
+      movePath(x,y);
+    }
+    socket.on("beginPath",handleBeginPathSocket);
+    socket.on("movePath",handleMovePathSocket);
     return ()=>{
       canvas.removeEventListener("mousedown",handleMouseDown);
       canvas.removeEventListener("mousemove",handleMouseMove);
       canvas.removeEventListener("mouseup",handleMouseUp);
+      socket.off("beginPath",handleBeginPathSocket);
+      socket.off("movePath",handleMovePathSocket);
     }
   },[]);
   
