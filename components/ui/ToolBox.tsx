@@ -107,7 +107,7 @@ export default function ToolBox() {
               onChange={(e)=>{
                 setbrushSize(Number(e.target.value));
                 const size = Number(e.target.value);
-                dispatch(setBrushSize({item:activeMenuItem,brushSize}));
+                dispatch(setBrushSize({item:activeMenuItem,brushSize:size}));
                 socket.emit("config",{color:brushColor,size});
               }} />
             </div>
