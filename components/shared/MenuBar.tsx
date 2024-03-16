@@ -16,10 +16,10 @@ const MenuBar = () => {
   }
   return (
     <div
-    className=' mt-3 py-4 md:w-4/6 max-md:w-11/12 mx-auto '
+    className=' absolute left-[20%] max-md:left-[4%]  mt-3 py-4 md:w-4/6 max-md:w-11/12 mx-auto '
     >
       <nav
-      className='shadow-md  text-black font-bold text-2xl px-3 py-4 rounded-lg flex items-center justify-around border-border1    '
+      className='shadow-md text-black font-bold text-2xl px-3 py-4 rounded-lg flex items-center justify-around border-border1    '
       >
         <FontAwesomeIcon 
           icon={faPencil} 

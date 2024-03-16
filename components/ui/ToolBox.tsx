@@ -14,7 +14,7 @@ export default function ToolBox() {
   const dispatch = useDispatch();
   return (
     <div
-    className=' shadow-md absolute mx-6 px-4 w-1/3 mt-[11%] max-md:w-10/12 ring-1 ring-text1 p-4 rounded-md  '
+    className=' shadow-md max-md:top-[10%] top-[7%]  max-md:left-[5%] absolute mx-6 px-4 w-1/3 mt-[11%] max-md:w-10/12 ring-1 ring-text1 p-4 rounded-md  '
     >
       {
         showStrokes &&
